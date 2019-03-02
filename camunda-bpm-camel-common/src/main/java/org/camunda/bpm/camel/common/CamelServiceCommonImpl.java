@@ -73,7 +73,7 @@ public abstract class CamelServiceCommonImpl implements CamelService {
     for (String var : variables) {
       final String variableName;
       final boolean checkForNull;
-      if (var.endsWith("?")) {
+      if (var.endsWith("?")) {   // The ? denotes that the value shouldn't be checked for a null value
     	variableName = var.substring(0, var.length() - 1);
     	checkForNull = false;
       } else {
