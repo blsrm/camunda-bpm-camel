@@ -71,17 +71,21 @@ public abstract class CamelServiceCommonImpl implements CamelService {
         .getBpmnExecutionContext().getExecution();
     Map<String, Object> variablesToSend = new HashMap<String, Object>();
     for (String var : variables) {
-      Object value;
+      final String variableName;
+      final boolean checkForNull;
       if (var.endsWith("?")) {
-        value = execution.getVariable(var.substring(0, var.length() - 1));
+    	variableName = var.substring(0, var.length() - 1);
+    	checkForNull = false;
       } else {
-        value = execution.getVariable(var);
-        if (value == null) {
-          throw new IllegalArgumentException("Process variable '" + var
-              + "' no found!");
-        }
+    	variableName = var;
+    	checkForNull = true;
       }
-      variablesToSend.put(var, value);
+      final Object value = execution.getVariable(variableName);
+      if (checkForNull && (value == null)) {
+        throw new IllegalArgumentException("Process variable '" + variableName
+            + "' no found!");
+      }
+      variablesToSend.put(variableName, value);
     }
 
     log.debug("Sending process variables '{}' as a map to Camel endpoint '{}'",
